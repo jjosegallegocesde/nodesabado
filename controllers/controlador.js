@@ -1,18 +1,35 @@
 //EL controlador se encaragar de administrar
 //las peticione y repuestas
-
 const {request,response}=require('express')
+
+//importar el servicio
+const {insertarJugador}=require('../services/servicios.js')
 
 //cuales son las operaciones
 //que debe realizar mi SERVIDOR
-function registrarJugador(peticion=request,respuesta=response){
+async function registrarJugador(peticion=request,respuesta=response){
 
-    respuesta.json(
-        {
+    //capturo los datos que llegan el cuerpo de la peticion
+    let datosCliente=peticion.body;
+
+    //intentar grabar los datos een bd usando el servicio
+    try{
+
+        await insertarJugador(datosCliente)
+        respuesta.status(200).json({
             estado:true,
-            mensaje:"estoy registrando un jugador"
-        }
-    )
+            mensaje:"exito registrando el jugador"
+        })
+
+    }catch(error){
+        respuesta.status(400).json({
+            estado:false,
+            mensaje:"upsss... "+error
+        })
+        
+    }
+
+   
 }
 
 function buscarJugador(peticion=request,respuesta=response){
